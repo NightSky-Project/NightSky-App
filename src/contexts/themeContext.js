@@ -17,22 +17,26 @@ const _ThemeProvider = ({ children }) => {
 
     const { light, dark } = themes;
 
-    const switchColorMode = (colorMode) => {
-        const newTheme = colorMode === 'dark';
-        setIsDarkMode(newTheme);
-        saveColorMode(newTheme);
+    const switchColorMode = async (colorMode) => {
+        const mode = colorMode === 'dark';
+        setIsDarkMode(mode);
+        await saveColorMode(mode);
     };
 
-    const switchDarkModeType = (darkModeType) => {
+    const switchDarkModeType = async (darkModeType) => {
         setDarkModeType(darkModeType);
-        saveDarkModeType(darkModeType);
+        await saveDarkModeType(darkModeType);
     }
 
-    const saveColorMode = async (theme) => {
+    const saveColorMode = async (mode_) => {
         try {
-            await AsyncStorage.setItem('theme', JSON.stringify(theme)).then(
+            const isDarkMode_ = await AsyncStorage.getItem('isDarkMode').catch((error) => { return null; });
+            if (isDarkMode_ !== null && JSON.parse(isDarkMode_) === mode_) {
+                return;
+            }
+            await AsyncStorage.setItem('isDarkMode', JSON.stringify(mode_)).then(
                 () => {
-                    console.log('Theme saved successfully:', !theme ? 'Dark' : 'Light');
+                    console.log('Theme saved successfully:', mode_ ? 'Dark' : 'Light');
                 }
             ).catch((error) => {
                 console.log('Error saving theme:', error);
@@ -44,6 +48,10 @@ const _ThemeProvider = ({ children }) => {
 
     const saveDarkModeType = async (type) => {
         try {
+            const currentDarkModeType = await AsyncStorage.getItem('darkModeType').catch((error) => { return ''; });
+            if (currentDarkModeType === type) {
+                return;
+            }
             await AsyncStorage.setItem('darkModeType', type).then(
                 () => {
                     console.log('Dark mode type saved successfully:', type);
@@ -58,16 +66,28 @@ const _ThemeProvider = ({ children }) => {
 
     const loadTheme = async () => {
         try {
-            const savedTheme = await AsyncStorage.getItem('theme').then(
+            const savedColorMode = await AsyncStorage.getItem('isDarkMode').then(
                 (value) => {
-                    console.log('Theme loaded successfully:', value === 'true' ? 'Dark' : 'Light');
+                    console.log('ColorMode loaded successfully:', value === 'true' ? 'Dark' : 'Light');
                     return value;
                 }
             ).catch((error) => {
                 console.log('Error loading theme:', error);
             });
-            if (savedTheme !== null) {
-                setIsDarkMode(JSON.parse(savedTheme));
+            if (savedColorMode !== null) {
+                setIsDarkMode(JSON.parse(savedColorMode));
+            }
+
+            const savedDarkModeType = await AsyncStorage.getItem('darkModeType').then(
+                (value) => {
+                    console.log('DarkModeType loaded successfully:', value);
+                    return value;
+                }
+            ).catch((error) => {
+                console.log('Error loading dark mode type:', error);
+            });
+            if (savedDarkModeType !== null) {
+                setDarkModeType(savedDarkModeType);
             }
         } catch (error) {
             console.log('Error loading theme:', error);
@@ -76,7 +96,7 @@ const _ThemeProvider = ({ children }) => {
 
     return (
         <ThemeContext.Provider value={{ isDarkMode, loadTheme, switchColorMode, darkModeType, switchDarkModeType }}>
-            <ThemeProvider theme={isDarkMode ? dark : light}>
+            <ThemeProvider theme={isDarkMode ? (dark[darkModeType]) : light}>
                 {children}
             </ThemeProvider>
         </ThemeContext.Provider>

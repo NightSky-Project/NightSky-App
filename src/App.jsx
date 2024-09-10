@@ -1,3 +1,4 @@
+import React from 'react';
 import { NativeRouter, Route, Routes } from 'react-router-native';
 import BskyPage from './pages';
 import { ThemeContext, _ThemeProvider } from './contexts/themeContext';

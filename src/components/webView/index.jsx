@@ -1,9 +1,8 @@
 import React, { useRef } from 'react';
 import { WebView } from 'react-native-webview';
-import Constants from 'expo-constants';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 
-export default function WebViewComponent({ ContentToInject = [], handleWebViewMessage }) {
+export default function WebViewComponent({ plugins = [], handleWebViewMessage }) {
     const webViewRef = useRef(null);
 
     return (
@@ -16,8 +15,7 @@ export default function WebViewComponent({ ContentToInject = [], handleWebViewMe
             style={styles.webView}
             javaScriptEnabled={true}
             injectedJavaScript={
-                ContentToInject.length > 0
-                    && ContentToInject.join('\n')
+                plugins.length > 0 ? plugins.join('\n') : ''
             }
             onMessage={handleWebViewMessage}
         />

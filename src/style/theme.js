@@ -1,16 +1,29 @@
 const lightTheme = {
-    primaryColor: 'rgb(0, 28, 48)',
-    secondaryColor: '#176b87',
-    tertiaryColor: '#64ccc5',
+    primaryColor: '',
+    secondaryColor: '',
+    tertiaryColor: '',
 
-    backgroundColor: 'rgb(218, 255, 251)',
+    backgroundColor: '#ffffff',
 };
-const darkTheme = {
-    primaryColor: 'rgb(238, 247, 255)', // txt
-    secondaryColor: 'rgb(182, 187, 196)', // txt
-    tertiaryColor: 'rgb(7, 52, 83)',
+const dark_dim_theme = {
+    primaryColor: '', 
+    secondaryColor: '',
+    tertiaryColor: '',
 
-    backgroundColor: 'rgb(2, 21, 38)',
+    backgroundColor: '#161e27',
+};
+
+const dark_black_theme = {
+    primaryColor: '',
+    secondaryColor: '',
+    tertiaryColor: '',
+
+    backgroundColor: '#000000',
+};
+
+const darkTheme = {
+    dim: dark_dim_theme,
+    dark: dark_black_theme,
 };
 
 const themes = {
