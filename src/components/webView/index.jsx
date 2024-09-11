@@ -16,28 +16,25 @@ export default function WebViewComponent({ plugins = [], handleWebViewMessage })
         let allInjectedJS = '';
 
         plugins.forEach((plugin) => {
-        // Inject styles
-        const styles = plugin.styles.map((css) => `<style>${css}</style>`).join('\n');
+            // Inject styles
+            const styles = plugin.styles.map((css) => css).join('\n');
+            // Inject scripts
+            const scripts = plugin.scripts.join('\n');
 
-        // Inject scripts as isolated modules
-        const scripts = plugin.scripts.join('\n');
+            // Combine all into a script to be injected
+            allInjectedJS += `
+                (function() {
+                    const styleElement = document.createElement('style');
+                    styleElement.innerText = \`${styles}\`;
+                    document.head.appendChild(styleElement);
 
-        // Combine all into a script to be injected
-        allInjectedJS += `
-            (function() {
-            // Inject styles into the head
-            const styleElement = document.createElement('style');
-            styleElement.innerHTML = \`${styles}\`;
-            document.head.appendChild(styleElement);
-
-            // Inject and execute the script
-            ${scripts}
-            })();
-        `;
+                    ${scripts}
+                })();
+            `;
         });
-
         setInjectedJS(allInjectedJS);
     }, [plugins]);
+
 
     return (
         <WebView

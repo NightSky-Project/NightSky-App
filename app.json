@@ -44,6 +44,12 @@
         "projectId": "165e3ae9-0c25-4461-bf1c-2b7ba4f48418"
       }
     },
-    "owner": "rbd01"
+    "owner": "rbd01",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/165e3ae9-0c25-4461-bf1c-2b7ba4f48418"
+    }
   }
 }
