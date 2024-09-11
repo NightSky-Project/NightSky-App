@@ -1,4 +1,4 @@
-import { supabase } from './supabaseClient';
+import { supabase } from '../config/supabase/supabaseClient';
 import { unzip } from 'react-native-zip-archive';
 import * as FileSystem from 'expo-file-system';
 
