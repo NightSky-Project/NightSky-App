@@ -4,6 +4,7 @@ import { StyleSheet, View, Text } from 'react-native';
 import WebViewComponent from '../components/webView';
 import { useThemeContext } from '../contexts/themeContext';
 import { loadPluginsFromDirectory } from '../utils/pluginsLoader';
+import { downloadPlugin } from '../utils/downloadPlugin';
 
 export default function BskyPage() {
     const { switchColorMode, switchDarkModeType } = useThemeContext();
@@ -12,6 +13,7 @@ export default function BskyPage() {
 
     useEffect(() => {
         const loadPlugins = async () => {
+            await downloadPlugin('PluginSample');
             const plugins = await loadPluginsFromDirectory();
             setPluginsList(plugins);
             setLoaded(true);

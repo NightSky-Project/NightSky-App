@@ -1,6 +1,5 @@
-import { supabase } from '../config/supabase/supabaseClient';
-import { unzip } from 'react-native-zip-archive';
 import * as FileSystem from 'expo-file-system';
+import unzipPlugin from './unzipPlugin';
 
 /**
  * Downloads a plugin from the Supabase storage and extracts it to the plugins directory.
@@ -10,25 +9,59 @@ import * as FileSystem from 'expo-file-system';
 export async function downloadPlugin(pluginName) {
     const downloadPath = `${FileSystem.documentDirectory}plugins/${pluginName}.zip`;
     const extractPath = `${FileSystem.documentDirectory}plugins/${pluginName}`;
+    const bucketUrl = `https://tfauntitwhcdwztqqgbp.supabase.co/storage/v1/object/public/Plugins/${pluginName}.zip`;
+    const PLUGINS_DIRECTORY = FileSystem.documentDirectory + 'plugins';
+
+    const checkDirectoryExists = async (directory) => {
+        try {
+            const stats = await FileSystem.getInfoAsync(directory);
+            return stats.exists;
+            } catch (error) {
+            console.error('Error checking directory:', error);
+            return false;
+        }
+    };
+
+    if (!await checkDirectoryExists(PLUGINS_DIRECTORY)) {
+        await FileSystem.makeDirectoryAsync(PLUGINS_DIRECTORY, { intermediates: true });
+    }
+
+    const pluginExists = await FileSystem.getInfoAsync(extractPath);
+    if (pluginExists.exists) {
+        console.log('Plugin already installed:', extractPath);
+        return extractPath;
+    }
 
     try {
-        const { data, error } = await supabase.storage
-            .from('plugins')
-            .download(`${pluginName}/plugin.zip`);
+        if(!await FileSystem.getInfoAsync(downloadPath)) {
+            const response = await FileSystem.downloadAsync(bucketUrl, downloadPath);
+            if (!response.ok) {
+                console.error('Erro ao baixar o plugin:', response.statusText);
+                return null;
+            }
 
-        if (error) {
-            console.error('Erro ao baixar o plugin:', error.message);
+            const arrayBuffer = await response.arrayBuffer();
+            const base64String = arrayBufferToBase64(arrayBuffer);
+
+            await FileSystem.writeAsStringAsync(downloadPath, base64String, {
+                encoding: FileSystem.EncodingType.Base64,
+            });
+
+            const pluginDone = await FileSystem.getInfoAsync(downloadPath);
+            console.log('Plugin downloaded:', pluginDone);
+            
+        } else {
+            console.log('Plugin already downloaded:', downloadPath);
+        }
+        
+        try {
+            const unzipResult = await unzipPlugin(downloadPath, extractPath);
+            await FileSystem.deleteAsync(downloadPath, { idempotent: true });
+        } catch (error) {
+            console.error('Error during unzip operation:', error);
             return null;
         }
 
-        const zipContent = await data.arrayBuffer();
-
-        await FileSystem.writeAsStringAsync(downloadPath, zipContent, {
-            encoding: FileSystem.EncodingType.Base64,
-        });
-
-        await extractZip(downloadPath, extractPath);
-        await FileSystem.deleteAsync(downloadPath, { idempotent: true });
 
         console.log('Plugin downloaded and extracted:', extractPath);
         return extractPath;
@@ -38,26 +71,12 @@ export async function downloadPlugin(pluginName) {
     }
 }
 
-async function extractZip(zipPath, extractPath) {
-    const zipContent = await FileSystem.readAsStringAsync(zipPath, {
-        encoding: FileSystem.EncodingType.Base64,
-    });
-    const zip = await unzip(zipContent, extractPath);
-
-    await FileSystem.makeDirectoryAsync(extractPath, { intermediates: true });
-
-    const files = Object.keys(zip.files);
-    for (const fileName of files) {
-        const file = zip.files[fileName];
-        const filePath = `${extractPath}/${fileName}`;
-
-        if (file.dir) {
-            await FileSystem.makeDirectoryAsync(filePath, { intermediates: true });
-        } else {
-            const fileData = await file.async('base64');
-            await FileSystem.writeAsStringAsync(filePath, fileData, {
-                encoding: FileSystem.EncodingType.Base64,
-            });
-        }
+function arrayBufferToBase64(buffer) {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
     }
+    return btoa(binary);
 }

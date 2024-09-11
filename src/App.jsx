@@ -1,3 +1,4 @@
+import 'expo-dev-client';
 import React from 'react';
 import { NativeRouter, Route, Routes } from 'react-router-native';
 import BskyPage from './pages';
