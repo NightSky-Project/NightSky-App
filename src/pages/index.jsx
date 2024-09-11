@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { WebView } from 'react-native-webview';
 import Constants from 'expo-constants';
 import { StyleSheet, View, Text } from 'react-native';
 import WebViewComponent from '../components/webView';
@@ -13,9 +12,8 @@ export default function BskyPage() {
 
     useEffect(() => {
         const loadPlugins = async () => {
-            const scripts = await loadPluginsFromDirectory();
-            // console.log('Scripts:', scripts);
-            setPluginsList(scripts);
+            const plugins = await loadPluginsFromDirectory();
+            setPluginsList(plugins);
             setLoaded(true);
         };
 
