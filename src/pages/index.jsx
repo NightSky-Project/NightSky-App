@@ -3,28 +3,29 @@ import Constants from 'expo-constants';
 import { StyleSheet, View, Text } from 'react-native';
 import WebViewComponent from '../components/webView';
 import { useThemeContext } from '../contexts/themeContext';
-import { loadPluginsFromDirectory } from '../plugins/scripts/pluginsLoader';
+import { loadPlugins } from '../plugins/scripts/pluginsLoader';
 import { downloadPlugin } from '../plugins/scripts/downloadPlugin';
+import webViewLogger from '../utils/webViewLogger';
 
 export default function BskyPage() {
     const { switchColorMode, switchDarkModeType } = useThemeContext();
     const [pluginsList, setPluginsList] = useState([]);
     const [loaded, setLoaded] = useState(false);
-    // const [downloaded, setDownloaded] = useState(false);
+    const [downloaded, setDownloaded] = useState(false);
 
 
     useEffect(() => {
-        const loadPlugins = async () => {
-            // if(!downloaded) { // Test only
-            //     await downloadPlugin('pluginSample');
-            //     setDownloaded(true);
-            // }
-            const plugins = await loadPluginsFromDirectory();
+        const loadPlugins_ = async () => {
+            if(!downloaded) { // Test only
+                // await downloadPlugin('pluginDefault');
+                setDownloaded(true);
+            }
+            const plugins = await loadPlugins();
             setPluginsList(plugins);
             setLoaded(true);
         };
 
-        loadPlugins();
+        loadPlugins_();
     }, []);
 
     const setTheme = async (colorMode, darkModeType) => {
@@ -58,28 +59,6 @@ export default function BskyPage() {
             }
         </View>
     );
-}
-
-function webViewLogger(event) {
-    try {
-        const data = JSON.parse(event.nativeEvent.data);
-
-        switch (data.type) {
-            case 'log':
-                console.log('WebView Log:', ...data.messages);
-                break;
-            case 'error':
-                console.error('WebView Error:', ...data.messages);
-                break;
-            case 'warn':
-                console.warn('WebView Warn:', ...data.messages);
-                break;
-            default:
-                // console.log('WebView Message:', data);
-        }
-    } catch (error) {
-        console.error('Failed to parse WebView message on webViewLogger:', error);
-    }
 }
 
 const styles = StyleSheet.create({

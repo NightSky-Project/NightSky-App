@@ -13,12 +13,15 @@ export default function WebViewComponent({ plugins = [], handleWebViewMessage })
     const [injectedJS, setInjectedJS] = useState('');
 
     useEffect(() => {
-        let allInjectedJS = '';
+        let allInjectedJS = 'window.pluginAssets = {};\n'; // Initialize window.pluginAssets
 
         plugins.forEach((plugin) => {
-            // Inject styles
+            // Add assets to the global object for access in scripts
+            for (const [assetName, assetUri] of Object.entries(plugin.assets || {})) {
+                allInjectedJS += `window.pluginAssets['${assetName}'] = '${assetUri}';\n`;
+            }
+
             const styles = plugin.styles.map((css) => css).join('\n');
-            // Inject scripts
             const scripts = plugin.scripts.join('\n');
 
             // Combine all into a script to be injected
@@ -32,6 +35,8 @@ export default function WebViewComponent({ plugins = [], handleWebViewMessage })
                 })();
             `;
         });
+
+        // console.log('Injected JS:', allInjectedJS);
         setInjectedJS(allInjectedJS);
     }, [plugins]);
 

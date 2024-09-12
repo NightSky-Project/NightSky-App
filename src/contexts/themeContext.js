@@ -36,13 +36,13 @@ const _ThemeProvider = ({ children }) => {
             }
             await AsyncStorage.setItem('isDarkMode', JSON.stringify(mode_)).then(
                 () => {
-                    console.log('Theme saved successfully:', mode_ ? 'Dark' : 'Light');
+                    console.info('Theme saved successfully:', mode_ ? 'Dark' : 'Light');
                 }
             ).catch((error) => {
-                console.log('Error saving theme:', error);
+                console.error('Error saving theme:', error);
             });
         } catch (error) {
-            console.log('Error saving theme:', error);
+            console.error('Error saving theme:', error);
         }
     };
 
@@ -54,13 +54,13 @@ const _ThemeProvider = ({ children }) => {
             }
             await AsyncStorage.setItem('darkModeType', type).then(
                 () => {
-                    console.log('Dark mode type saved successfully:', type);
+                    console.info('Dark mode type saved successfully:', type);
                 }
             ).catch((error) => {
-                console.log('Error saving dark mode type:', error);
+                console.error('Error saving dark mode type:', error);
             });
         } catch (error) {
-            console.log('Error saving dark mode type:', error);
+            console.error('Error saving dark mode type:', error);
         }
     }
 
@@ -68,11 +68,11 @@ const _ThemeProvider = ({ children }) => {
         try {
             const savedColorMode = await AsyncStorage.getItem('isDarkMode').then(
                 (value) => {
-                    console.log('ColorMode loaded successfully:', value === 'true' ? 'Dark' : 'Light');
+                    console.info('ColorMode loaded successfully:', value === 'true' ? 'Dark' : 'Light');
                     return value;
                 }
             ).catch((error) => {
-                console.log('Error loading theme:', error);
+                console.error('Error loading theme:', error);
             });
             if (savedColorMode !== null) {
                 setIsDarkMode(JSON.parse(savedColorMode));
@@ -80,17 +80,17 @@ const _ThemeProvider = ({ children }) => {
 
             const savedDarkModeType = await AsyncStorage.getItem('darkModeType').then(
                 (value) => {
-                    console.log('DarkModeType loaded successfully:', value);
+                    console.info('DarkModeType loaded successfully:', value);
                     return value;
                 }
             ).catch((error) => {
-                console.log('Error loading dark mode type:', error);
+                console.error('Error loading dark mode type:', error);
             });
             if (savedDarkModeType !== null) {
                 setDarkModeType(savedDarkModeType);
             }
         } catch (error) {
-            console.log('Error loading theme:', error);
+            console.error('Error loading theme:', error);
         }
     };
 

@@ -16,7 +16,6 @@ export async function downloadPlugin(pluginName) {
 
     const pluginExists = await FileSystem.getInfoAsync(extractPath);
     if (pluginExists.exists) {
-        console.log('Plugin already installed:', extractPath);
         return extractPath;
     }
 
@@ -33,8 +32,6 @@ export async function downloadPlugin(pluginName) {
             console.error('Error during download operation:', error);
             return null;
         }
-    } else {
-        console.log('Plugin already downloaded:', downloadPath);
     }
 
     const unzipResult = await unzipPlugin(downloadPath, extractPath);
