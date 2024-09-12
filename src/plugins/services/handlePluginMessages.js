@@ -26,8 +26,6 @@ const handleWebViewMessage = async (event, webViewRef, resources, themeProps) =>
                     // Retrieve the requested resource
                     const pluginResources = resources.find(plugin => plugin.pluginSlug === pluginSlug);
                     const resourcePath = pluginResources.resources.find(res => res.resource === resource).uri;
-                    console.log('Resource path:', resourcePath);
-                    console.log('Plugin resources:', pluginResources);
                     const content = await FileSystem.readAsStringAsync(resourcePath);
                     
                     // Send the content back to the WebView

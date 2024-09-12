@@ -27,7 +27,7 @@ export async function downloadPlugin(pluginName) {
                 console.error('Error during download operation:', downloadResult);
                 return null;
             }
-            console.log('Plugin downloaded:', downloadResult);
+            console.info('Plugin downloaded:', downloadResult.uri);
         } catch (error) {
             console.error('Error during download operation:', error);
             return null;
@@ -35,6 +35,7 @@ export async function downloadPlugin(pluginName) {
     }
 
     const unzipResult = await unzipPlugin(downloadPath, extractPath);
+    
     await FileSystem.deleteAsync(downloadPath, { idempotent: true }).then(() => {
         console.log('Downloaded plugin deleted:', downloadPath);
     }).catch((error) => {

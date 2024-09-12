@@ -1,9 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { WebView } from 'react-native-webview';
 import { StyleSheet } from 'react-native';
-import handleWebViewMessage from '../../plugins/services/handleMessages';
-import webViewLogger from '../../utils/webViewLogger';
-import { useDispatch, useSelector } from 'react-redux';
+import handleWebViewMessage from '../../plugins/services/handlePluginMessages';
+import { useSelector } from 'react-redux';
 import { useThemeContext } from '../../contexts/themeContext';
 
 /**
@@ -14,8 +13,7 @@ import { useThemeContext } from '../../contexts/themeContext';
  */
 export default function WebViewComponent({ plugins = [], webViewRef }) {
     const [injectedJS, setInjectedJS] = useState('');
-    const { switchColorMode, switchDarkModeType } = useThemeContext();
-    const dispatch = useDispatch();
+    const { switchColorMode, switchDarkModeType } = useThemeContext();;
     const {resources} = useSelector(state => state.pluginResources);
 
     useEffect(() => {

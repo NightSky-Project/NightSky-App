@@ -75,8 +75,8 @@ export async function loadPlugins(dispatch, addPluginResources) {
                             }
 
                             // Load assets
-                            if (manifest.content.assets) {
-                                for (const assetFile of manifest.content.assets) {
+                            if (manifest.content.resources) {
+                                for (const assetFile of manifest.content.resources) {
                                     const assetPath = `${pluginPath}/${assetFile}`;
                                     try {
                                         const assetUri = assetPath;
