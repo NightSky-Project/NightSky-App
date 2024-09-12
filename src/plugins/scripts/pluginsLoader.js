@@ -63,7 +63,7 @@ export async function loadPlugins() {
                                     const cssPath = `${pluginPath}/${cssFile}`;
                                     try {
                                         const cssContent = await FileSystem.readAsStringAsync(cssPath);
-                                        //styles.push(cssContent);
+                                        styles.push(cssContent);
                                     } catch (error) {
                                         console.error(`Error loading style: ${cssFile}`, error);
                                     }
@@ -85,7 +85,6 @@ export async function loadPlugins() {
                             }
                         }
 
-                        // Add the plugin's resources to the list
                         plugins.push({ name: manifest.name, scripts, styles, assets });
                     }
                 } catch (error) {

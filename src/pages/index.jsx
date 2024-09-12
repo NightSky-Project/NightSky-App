@@ -11,15 +11,15 @@ export default function BskyPage() {
     const { switchColorMode, switchDarkModeType } = useThemeContext();
     const [pluginsList, setPluginsList] = useState([]);
     const [loaded, setLoaded] = useState(false);
-    const [downloaded, setDownloaded] = useState(false);
+    // const [downloaded, setDownloaded] = useState(false);
 
 
     useEffect(() => {
         const loadPlugins_ = async () => {
-            if(!downloaded) { // Test only
-                // await downloadPlugin('pluginDefault');
-                setDownloaded(true);
-            }
+            // if(!downloaded) { // Test only
+            //     // await downloadPlugin('pluginDefault');
+            //     setDownloaded(true);
+            // }
             const plugins = await loadPlugins();
             setPluginsList(plugins);
             setLoaded(true);

@@ -13,7 +13,7 @@ export default function WebViewComponent({ plugins = [], handleWebViewMessage })
     const [injectedJS, setInjectedJS] = useState('');
 
     useEffect(() => {
-        let allInjectedJS = 'window.pluginAssets = {};\n'; // Initialize window.pluginAssets
+        let allInjectedJS = 'window.pluginAssets = {};\n';
 
         plugins.forEach((plugin) => {
             // Add assets to the global object for access in scripts
