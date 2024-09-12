@@ -7,7 +7,7 @@ import getWebViewLogs from '../default/getWebViewLogs';
  * Loads plugins from the plugins directory and returns a list of plugins with their scripts, styles, and assets.
  * @returns {Promise<Array>} List of plugins with their scripts, styles, and assets
  */
-export async function loadPlugins() {
+export async function loadPlugins(dispatch, addPluginResources) {
     const PLUGINS_DIRECTORY = FileSystem.documentDirectory + 'plugins';
     // await FileSystem.deleteAsync(PLUGINS_DIRECTORY, { idempotent: true }); // TEST ONLY - Reset plugins directory
 
@@ -42,7 +42,10 @@ export async function loadPlugins() {
                         // Collect scripts, styles, and assets based on the custom manifest
                         const scripts = [];
                         const styles = [];
-                        const assets = {};
+                        const assets = {
+                            pluginSlug: manifest.slug,
+                            resources: []
+                        };
 
                         if (manifest.content) {
                             // Load scripts
@@ -76,17 +79,20 @@ export async function loadPlugins() {
                                 for (const assetFile of manifest.content.assets) {
                                     const assetPath = `${pluginPath}/${assetFile}`;
                                     try {
-                                        const assetUri = 'file://' + assetPath;
-                                        const assetId = manifest.slug + '/' + assetFile;
-                                        assets[assetId] = assetUri;
+                                        const assetUri = assetPath;
+                                        const assetId = assetFile.split('/').pop();
+                                        assets.resources.push({ resource: assetId, uri: assetUri });
+
                                     } catch (error) {
                                         console.error(`Error loading asset: ${assetFile}`, error);
                                     }
                                 }
+
+                                dispatch(addPluginResources(assets));
                             }
                         }
 
-                        plugins.push({ name: manifest.name, scripts, styles, assets });
+                        plugins.push({ name: manifest.name, scripts, styles });
                     }
                 } catch (error) {
                     console.error(`Error loading plugin from ${folder}:`, error);

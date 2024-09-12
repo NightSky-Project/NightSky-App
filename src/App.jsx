@@ -5,16 +5,20 @@ import BskyPage from './pages';
 import { ThemeContext, _ThemeProvider } from './contexts/themeContext';
 import StyledStatusBar from './components/statusBar';
 import StyledNavigationBar from './components/navigationBar';
+import { Provider } from 'react-redux'
+import store from './redux/store'
 
 export default function App() {
     return (
         <NativeRouter>
             <_ThemeProvider>
-                <StyledStatusBar />
-                <Routes>
-                    <Route path="/" element={<BskyPage />} />
-                </Routes>
-                <StyledNavigationBar />
+                <Provider store={store}>
+                    <StyledStatusBar />
+                    <Routes>
+                        <Route path="/" element={<BskyPage />} />
+                    </Routes>
+                    <StyledNavigationBar />
+                </Provider>
             </_ThemeProvider>
         </NativeRouter>
     );

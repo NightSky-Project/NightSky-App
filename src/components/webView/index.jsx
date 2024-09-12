@@ -1,6 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { WebView } from 'react-native-webview';
 import { StyleSheet } from 'react-native';
+import handleWebViewMessage from '../../plugins/services/handleMessages';
+import webViewLogger from '../../utils/webViewLogger';
+import { useDispatch, useSelector } from 'react-redux';
+import { useThemeContext } from '../../contexts/themeContext';
 
 /**
  * Component that renders a WebView with injected scripts and styles.
@@ -8,19 +12,16 @@ import { StyleSheet } from 'react-native';
  * @param {Array} props.plugins - List of plugins to be injected into the WebView.
  * @param {Function} props.handleWebViewMessage - Function to handle messages from the WebView.
  */
-export default function WebViewComponent({ plugins = [], handleWebViewMessage }) {
-    const webViewRef = useRef(null);
+export default function WebViewComponent({ plugins = [], webViewRef }) {
     const [injectedJS, setInjectedJS] = useState('');
+    const { switchColorMode, switchDarkModeType } = useThemeContext();
+    const dispatch = useDispatch();
+    const {resources} = useSelector(state => state.pluginResources);
 
     useEffect(() => {
-        let allInjectedJS = 'window.pluginAssets = {};\n';
+        let allInjectedJS = '';
 
         plugins.forEach((plugin) => {
-            // Add assets to the global object for access in scripts
-            for (const [assetName, assetUri] of Object.entries(plugin.assets || {})) {
-                allInjectedJS += `window.pluginAssets['${assetName}'] = '${assetUri}';\n`;
-            }
-
             const styles = plugin.styles.map((css) => css).join('\n');
             const scripts = plugin.scripts.join('\n');
 
@@ -50,8 +51,11 @@ export default function WebViewComponent({ plugins = [], handleWebViewMessage })
             databaseEnabled={true}
             style={styles.webView}
             javaScriptEnabled={true}
+            allowFileAccess={true} 
+            allowFileAccessFromFileURLs={true}
+            allowUniversalAccessFromFileURLs={true}
             injectedJavaScript={injectedJS}
-            onMessage={handleWebViewMessage}
+            onMessage={(event) => {handleWebViewMessage(event, webViewRef, resources, {switchColorMode, switchDarkModeType})}}
         />
     );
 }

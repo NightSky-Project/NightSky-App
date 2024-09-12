@@ -9,7 +9,7 @@ export default `
                     if (mutation.attributeName === 'class') {
                         const currentClass = htmlElement.className;
                         if (validThemes.includes(currentClass)) {
-                            const localStorageData = { ...localStorage, messageType: 'localStorage' };
+                            const localStorageData = { ...localStorage, messageType: 'LOCAL_STORAGE' };
                             window.ReactNativeWebView.postMessage(JSON.stringify(localStorageData));
                         }
                     }
