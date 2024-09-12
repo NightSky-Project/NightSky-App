@@ -9,6 +9,7 @@ import getWebViewLogs from '../default/getWebViewLogs';
  */
 export async function loadPlugins() {
     const PLUGINS_DIRECTORY = FileSystem.documentDirectory + 'plugins';
+    // await FileSystem.deleteAsync(PLUGINS_DIRECTORY, { idempotent: true }); // TEST ONLY - Reset plugins directory
 
     const checkDirectoryExists = async (directory) => {
         try {
@@ -75,8 +76,8 @@ export async function loadPlugins() {
                                 for (const assetFile of manifest.content.assets) {
                                     const assetPath = `${pluginPath}/${assetFile}`;
                                     try {
-                                        const assetUri = await FileSystem.getContentUriAsync(assetPath);
-                                        const assetId = manifest.name + '/' + assetFile;
+                                        const assetUri = 'file://' + assetPath;
+                                        const assetId = manifest.slug + '/' + assetFile;
                                         assets[assetId] = assetUri;
                                     } catch (error) {
                                         console.error(`Error loading asset: ${assetFile}`, error);
