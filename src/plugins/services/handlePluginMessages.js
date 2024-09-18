@@ -10,6 +10,7 @@ import * as FileSystem from 'expo-file-system';
 const handleWebViewMessage = async (event, webViewRef, resources, themeProps) => {
     webViewLogger(event);
     try {
+        if(!event.nativeEvent.data) return;
         const message = JSON.parse(event.nativeEvent.data);
 
         if(message.messageType){

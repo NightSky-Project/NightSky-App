@@ -1,14 +1,14 @@
 {
   "expo": {
     "name": "Nightsky",
-    "slug": "opensky",
+    "slug": "nightsky",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#161e27"
     },
     "ios": {
@@ -41,7 +41,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "165e3ae9-0c25-4461-bf1c-2b7ba4f48418"
+        "projectId": "f74ebb88-dcba-43f9-91af-ffb49930f9fd"
       }
     },
     "owner": "rbd01",
@@ -49,7 +49,8 @@
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/165e3ae9-0c25-4461-bf1c-2b7ba4f48418"
+      "url": "https://u.expo.dev/f74ebb88-dcba-43f9-91af-ffb49930f9fd",
+      "checkAutomatically": "NEVER"
     }
   }
 }
