@@ -8,9 +8,9 @@ import * as FileSystem from 'expo-file-system';
  * @param {Array} resources - List of plugin resources from the Redux store.
  */
 const handleWebViewMessage = async (event, webViewRef, resources, themeProps) => {
-    webViewLogger(event);
     try {
         if(!event.nativeEvent.data) return;
+        webViewLogger(event);
         const message = JSON.parse(event.nativeEvent.data);
 
         if(message.messageType){

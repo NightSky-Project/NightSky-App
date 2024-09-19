@@ -2,6 +2,7 @@ import * as FileSystem from 'expo-file-system';
 import getLocalStorageData from '../default/getLocalStorage';
 import monitorHtmlChanges from '../default/monitorHtmlChanges';
 import getWebViewLogs from '../default/getWebViewLogs';
+import changeLogoColor from '../default/changeLogoColor';
 
 /**
  * Loads plugins from the plugins directory and returns a list of plugins with their scripts, styles, and assets.
@@ -60,7 +61,6 @@ export async function loadPlugins(dispatch, addPluginResources) {
                                     }
                                 }
                             }
-
                             // Load styles
                             if (manifest.content.styles) {
                                 for (const cssFile of manifest.content.styles) {
@@ -101,7 +101,7 @@ export async function loadPlugins(dispatch, addPluginResources) {
         }
 
         // Include default scripts
-        plugins.push({ name: 'Default', scripts: [getLocalStorageData, monitorHtmlChanges, getWebViewLogs], styles: [] });
+        plugins.push({ name: 'Default', scripts: [getWebViewLogs, getLocalStorageData, monitorHtmlChanges], styles: [] });
         console.info('Plugins loaded');
 
         return plugins;

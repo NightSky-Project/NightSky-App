@@ -2,7 +2,7 @@
   "expo": {
     "name": "Nightsky",
     "slug": "nightsky",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -16,7 +16,7 @@
     },
     "android": {
       "package": "dev.rbd.nightsky",
-      "versionCode": 1,
+      "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#161e27"
@@ -45,9 +45,7 @@
       }
     },
     "owner": "rbd01",
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "1.0.1",
     "updates": {
       "url": "https://u.expo.dev/f74ebb88-dcba-43f9-91af-ffb49930f9fd",
       "checkAutomatically": "NEVER"

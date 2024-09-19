@@ -11,7 +11,6 @@ import { Host, Portal } from 'react-native-paper-portal';
 
 export default function BskyPage() {
     const [pluginsList, setPluginsList] = useState([]);
-    const webViewRef = useRef(null);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
     const [pluginsLoaded, setPluginsLoaded] = useState(false);
@@ -45,7 +44,7 @@ export default function BskyPage() {
                         </Portal>
                     )
                 }
-                <WebViewComponent plugins={pluginsList} webViewRef={webViewRef} />
+                <WebViewComponent plugins={pluginsList}/>
             </Host>
         </View>
     );
