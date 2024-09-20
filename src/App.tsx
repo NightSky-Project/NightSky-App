@@ -8,6 +8,7 @@ import StyledStatusBar from './components/statusBar';
 import StyledNavigationBar from './components/navigationBar';
 import { Provider } from 'react-redux';
 import store from './redux/store';
+import PluginStore from './pages/pluginStore';
 
 export default function App() {
     return (
@@ -16,7 +17,8 @@ export default function App() {
                 <Provider store={store}>
                     <StyledStatusBar />
                     <Routes>
-                        <Route path="/" element={<BskyPage />} />
+                        <Route path="/ff" element={<BskyPage />} />
+                        <Route path="/" element={<PluginStore />} />
                     </Routes>
                     <StyledNavigationBar />
                 </Provider>
@@ -24,3 +26,4 @@ export default function App() {
         </NativeRouter>
     );
 }
+

@@ -96,7 +96,7 @@ const _ThemeProvider = ({ children }) => {
 
     return (
         <ThemeContext.Provider value={{ isDarkMode, loadTheme, switchColorMode, darkModeType, switchDarkModeType }}>
-            <ThemeProvider theme={isDarkMode ? (dark[darkModeType]) : light}>
+            <ThemeProvider theme={isDarkMode ? dark[darkModeType] : light}>
                 {children}
             </ThemeProvider>
         </ThemeContext.Provider>
