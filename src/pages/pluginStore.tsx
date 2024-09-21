@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { Dimensions, Text, View } from 'react-native';
+import { Alert, Dimensions, Text, View } from 'react-native';
 import * as api from "../plugins/services/pluginsApi";
 import NavBar from '../components/storeNavBar';
 import { Plugin } from '../types/plugin';
+import PluginCard from '../components/pluginCard';
+import { downloadPlugin } from '../plugins/scripts/downloadPlugin';
+import { loadPlugins } from '../plugins/scripts/pluginsLoader';
+import { addPluginResources } from '../redux/slices/pluginResourcesSlice';
 
 const { width, height } = Dimensions.get('window');
 
@@ -28,11 +32,14 @@ const PluginStore = () => {
     const [plugins, setPlugins] = useState([] as Plugin[]);
     const [loading, setLoading] = useState(true);
     const [categoriesFilter, setCategoriesFilter] = useState([] as string[]);
+    const [dowloading, setDownloading] = useState(false);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const fetchPlugins = async () => {
             const plugins = await api.getPlugins(0, 10);
             setPlugins(filterByCategory(plugins, categoriesFilter));
+            await loadPlugins(dispatch, addPluginResources);
             setLoading(false);
         }
 
@@ -52,6 +59,38 @@ const PluginStore = () => {
         }
     }
 
+    const handleDownloadPlugin = async (plugin: Plugin): Promise<boolean> => {
+        return new Promise((resolve) => {
+            Alert.alert(
+                'Download Plugin',
+                `Do you want to download ${plugin.plugin_name}?`,
+                [
+                    {
+                        text: 'Cancel',
+                        onPress: () => { setDownloading(false); resolve(false); },
+                    },
+                    {
+                        text: 'OK',
+                        onPress: () => { 
+                            handleDownload(plugin);
+                            resolve(true);
+                        }
+                    }
+                ]
+            );
+        });
+    }
+
+    const handleDownload = async (plugin: Plugin) => {
+        setDownloading(true);
+        downloadPlugin(plugin.bucket_url, plugin.plugin_name).then(() => reloadPlugins());
+    }
+
+    const reloadPlugins = async () => {
+        setDownloading(false);
+        await loadPlugins(dispatch, addPluginResources);
+    }
+
     return (
         <>
             <NavBar handleSearch={handleSearch} />
@@ -62,10 +101,7 @@ const PluginStore = () => {
                     <PluginsListContainer>
                         {
                             plugins.map((plugin) => (
-                                <View key={plugin.plugin_id}>
-                                    <Text>{plugin.plugin_name}</Text>
-                                    <Text>{plugin.downloads}</Text>
-                                </View>
+                                <PluginCard key={plugin.plugin_id} plugin={plugin} handleDownload={handleDownloadPlugin} downloading={dowloading} />
                             ))
                         }
                     </PluginsListContainer>

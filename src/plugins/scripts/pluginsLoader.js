@@ -3,6 +3,7 @@ import getLocalStorageData from '../default/getLocalStorage';
 import monitorHtmlChanges from '../default/monitorHtmlChanges';
 import getWebViewLogs from '../default/getWebViewLogs';
 import changeLogoColor from '../default/changeLogoColor';
+import { addActivePlugin } from '../../redux/slices/pluginsActiveSlice';
 
 /**
  * Loads plugins from the plugins directory and returns a list of plugins with their scripts, styles, and assets.
@@ -32,7 +33,6 @@ export async function loadPlugins(dispatch, addPluginResources) {
                 const pluginFolderContents = await FileSystem.readDirectoryAsync(`${PLUGINS_DIRECTORY}/${folder}`);
                 const pluginPath = `${PLUGINS_DIRECTORY}/${folder}/${pluginFolderContents[0]}`;
                 const manifestPath = `${pluginPath}/appmanifest.json`;
-
                 try {
                     const manifestExists = await checkDirectoryExists(manifestPath);
 
@@ -92,6 +92,7 @@ export async function loadPlugins(dispatch, addPluginResources) {
                             }
                         }
 
+                        dispatch(addActivePlugin({ pluginSlug: manifest.slug, pluginName: manifest.name }));
                         plugins.push({ name: manifest.name, scripts, styles });
                     }
                 } catch (error) {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { View, TextInput, TouchableOpacity, Dimensions, Keyboard } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigate } from 'react-router-native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -34,6 +35,7 @@ const Input = styled(TextInput)`
 
 const NavBar = ({ handleSearch }) => {
     const [searchText, setSearchText] = useState('');
+    const navigate = useNavigate();
 
     const handleInputChange = (text) => {
         setSearchText(text);
@@ -46,7 +48,7 @@ const NavBar = ({ handleSearch }) => {
 
     return (
         <Container>
-            <TouchableOpacity onPress={() => console.log('Back button pressed')}>
+            <TouchableOpacity onPress={() => navigate('/ff')}>
                 <Ionicons name="arrow-back" size={24} color="black" />
             </TouchableOpacity>
             <Input

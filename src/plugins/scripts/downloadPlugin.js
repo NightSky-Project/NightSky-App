@@ -7,10 +7,9 @@ import createPluginDirs from './createPluginDirs';
  * @param {string} pluginName - Name of the plugin to be downloaded.
  * @returns {Promise<string>} Path to the extracted plugin directory.
  */
-export async function downloadPlugin(pluginName) {
+export async function downloadPlugin(bucketUrl, pluginName) {
     const downloadPath = `${FileSystem.documentDirectory}plugins/downloads/${pluginName}.zip`;
     const extractPath = `${FileSystem.documentDirectory}plugins/${pluginName}`;
-    const bucketUrl = `https://tfauntitwhcdwztqqgbp.supabase.co/storage/v1/object/public/Plugins/${pluginName}.zip`;
 
     await createPluginDirs();
 
@@ -45,6 +44,8 @@ export async function downloadPlugin(pluginName) {
     if (!unzipResult) {
         return null;
     }
+
+
 
     return extractPath;
 }
