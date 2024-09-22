@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { Alert, Dimensions, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Dimensions, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import * as api from "../plugins/services/pluginsApi";
 import NavBar from '../components/storeNavBar';
 import { Plugin } from '../types/plugin';
@@ -12,15 +12,33 @@ import { addPluginResources } from '../redux/slices/pluginResourcesSlice';
 
 const { width, height } = Dimensions.get('window');
 
-const PluginsListContainer = styled(View)`
-    display: flex;
+const PluginsListContainer = styled(ScrollView)`
     flex: 1;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
     padding: 10px;
-    margin-top: ${height * 0.15}px;
     background-color: ${props => props.theme.backgroundColor};
+`;
+
+const ClearSearchBtn = styled(TouchableOpacity)`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    background-color: ${props => props.theme.tertiaryColor};
+    border-radius: 5px;
+`;
+
+const ClearSearchBtnText = styled(Text)`
+    color: ${props => props.theme.primaryColor};
+    font-size: 14px;
+`;
+
+const FilterContainer = styled(View)`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 20px;
+    margin-top: ${height * 0.15}px;
 `;
 
 const filterByCategory = (plugins: Plugin[], categories: string[]) => {
@@ -29,6 +47,7 @@ const filterByCategory = (plugins: Plugin[], categories: string[]) => {
 }
 
 const PluginStore = () => {
+    const theme = useTheme();
     const [plugins, setPlugins] = useState([] as Plugin[]);
     const [loading, setLoading] = useState(true);
     const [categoriesFilter, setCategoriesFilter] = useState([] as string[]);
@@ -36,15 +55,15 @@ const PluginStore = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const fetchPlugins = async () => {
-            const plugins = await api.getPlugins(0, 10);
-            setPlugins(filterByCategory(plugins, categoriesFilter));
-            await loadPlugins(dispatch, addPluginResources);
-            setLoading(false);
-        }
-
         fetchPlugins();
     }, []);
+
+    const fetchPlugins = async () => {
+        const plugins = await api.getPlugins(0, 10);
+        setPlugins(filterByCategory(plugins, categoriesFilter));
+        await loadPlugins(dispatch, addPluginResources);
+        setLoading(false);
+    }
 
     const handleSearch = async (searchText: string) => {
         const plugins = await api.searchPlugins(searchText);
@@ -86,28 +105,46 @@ const PluginStore = () => {
         downloadPlugin(plugin.bucket_url, plugin.plugin_name).then(() => reloadPlugins());
     }
 
+    const handleClearFilters = async () => {
+        setCategoriesFilter([]);
+        await fetchPlugins();
+    }
+
     const reloadPlugins = async () => {
         setDownloading(false);
         await loadPlugins(dispatch, addPluginResources);
     }
 
     return (
-        <>
+        <View style={{backgroundColor: theme.backgroundColor, flex:1}}>
             <NavBar handleSearch={handleSearch} />
+            <FilterContainer>
+                <ClearSearchBtn onPress={handleClearFilters}>
+                    <ClearSearchBtnText>Clear Filters</ClearSearchBtnText>
+                </ClearSearchBtn>
+            </FilterContainer>
             {
                 loading ? (
-                    <Text>Loading...</Text>
+                    <ActivityIndicator size="large" color={theme.tertiaryColor} />
                 ) : (
-                    <PluginsListContainer>
+                    <PluginsListContainer contentContainerStyle={{
+                        display: 'flex',
+                        justifyContent: 'flex-start',
+                        alignItems: 'center',
+                    }}>
                         {
-                            plugins.map((plugin) => (
-                                <PluginCard key={plugin.plugin_id} plugin={plugin} handleDownload={handleDownloadPlugin} downloading={dowloading} />
-                            ))
+                            plugins.length === 0 ? (
+                                <Text style={{color: theme.primaryColor, fontSize: 14}}>No plugins found</Text>
+                            ) : (
+                                plugins.map((plugin) => (
+                                    <PluginCard key={plugin.plugin_id} plugin={plugin} handleDownload={handleDownloadPlugin} downloading={dowloading} />
+                                ))
+                            )
                         }
                     </PluginsListContainer>
                 )
             }
-        </>
+        </View>
     )
 }
 

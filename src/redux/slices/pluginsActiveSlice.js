@@ -7,7 +7,7 @@ const pluginsActive = createSlice({
     },
     reducers: {
         addActivePlugin: (state, action) => {
-            if (!action.payload.pluginSlug || !action.payload.pluginName) {
+            if (!action.payload.pluginSlug || !action.payload.pluginName || !action.payload.pluginVersion) {
                 throw new Error('Invalid plugin');
             }
             state.plugins.push(action.payload);

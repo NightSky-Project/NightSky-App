@@ -15,7 +15,12 @@ export async function downloadPlugin(bucketUrl, pluginName) {
 
     const pluginExists = await FileSystem.getInfoAsync(extractPath);
     if (pluginExists.exists) {
-        return extractPath;
+        await FileSystem.deleteAsync(extractPath, { idempotent: true }).then(() => {
+            console.log('Existing plugin deleted:', extractPath);
+        }).catch((error) => {
+            console.error('Error deleting existing plugin:', error);
+            return null;
+        });
     }
 
     const pluginDownloaded = await FileSystem.getInfoAsync(downloadPath);
@@ -44,8 +49,6 @@ export async function downloadPlugin(bucketUrl, pluginName) {
     if (!unzipResult) {
         return null;
     }
-
-
 
     return extractPath;
 }

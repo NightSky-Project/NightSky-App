@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { View, TextInput, TouchableOpacity, Dimensions, Keyboard } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import styled, { useTheme } from 'styled-components';
+import { View, TextInput, TouchableOpacity, Dimensions, Keyboard, BackHandler } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigate } from 'react-router-native';
 
@@ -20,7 +20,7 @@ const Container = styled.View`
     padding-right: 20px;
     background-color: transparent;
     border-bottom-width: 1px;
-    border-bottom-color: #ccc;
+    border-bottom-color: ${props => props.theme.tertiaryColor};
     background-color: ${props => props.theme.backgroundColor};
     z-index: 1000; 
 `;
@@ -28,14 +28,42 @@ const Container = styled.View`
 const Input = styled(TextInput)`
     flex: 1;
     margin-right: 20px;
+    color: ${props => props.theme.primaryColor};
     text-align: right;
     font-size: 18px;
     height: 40px;
+    border-bottom-width: 1px;
+    border-bottom-color: ${props => props.inFocus ? props.theme.tertiaryColor : 'transparent'};
+`;
+
+const ClearButton = styled.TouchableOpacity`
+    margin-left: 20px;
 `;
 
 const NavBar = ({ handleSearch }) => {
+    const theme = useTheme();
     const [searchText, setSearchText] = useState('');
+    const [isFocused, setIsFocused] = useState(false);
     const navigate = useNavigate();
+    const inputRef = useRef(null);
+
+    useEffect(() => {
+        const backAction = () => {
+            if(inputRef.current.isFocused()) {
+                handleBlur();
+                inputRef.current.blur();
+                return true;
+            }
+            return false;
+        };
+
+        const backHandler = BackHandler.addEventListener(
+            'hardwareBackPress',
+            backAction
+        );
+
+        return () => backHandler.remove();
+    }, []);
 
     const handleInputChange = (text) => {
         setSearchText(text);
@@ -44,22 +72,44 @@ const NavBar = ({ handleSearch }) => {
     const handleSearchSubmit = () => {
         handleSearch(searchText);
         Keyboard.dismiss();
+        inputRef.current.blur(); 
+    };
+
+    const handleClearSearch = () => {
+        setSearchText('');
+    };
+
+    const handleFocus = () => {
+        setIsFocused(true);
+    };
+
+    const handleBlur = () => {
+        setIsFocused(false);
     };
 
     return (
         <Container>
             <TouchableOpacity onPress={() => navigate('/ff')}>
-                <Ionicons name="arrow-back" size={24} color="black" />
+                <Ionicons name="arrow-back" size={24} color={theme.primaryColor} />
             </TouchableOpacity>
+            {isFocused && (
+                <ClearButton onPress={handleClearSearch}>
+                    <Ionicons name="close" size={24} color='red' />
+                </ClearButton>
+            )}
             <Input
+                ref={inputRef}
                 value={searchText}
                 onChangeText={handleInputChange}
-                placeholder="Search..."
+                placeholder={isFocused ? '' : 'Search...'}
                 onSubmitEditing={handleSearchSubmit}
-                placeholderTextColor={'#ccc'}     
+                placeholderTextColor={theme.tertiaryColor}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                inFocus={isFocused}
             />
             <TouchableOpacity onPress={handleSearchSubmit}>
-                <Ionicons name="search" size={24} color="black" />
+                <Ionicons name="search" size={24} color={theme.primaryColor} />
             </TouchableOpacity>
         </Container>
     );
