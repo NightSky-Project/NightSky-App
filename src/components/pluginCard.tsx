@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { Plugin } from "../types/plugin";
 import { Text, View } from "react-native";
 import Feather from '@expo/vector-icons/Feather';
@@ -72,6 +72,7 @@ const DownloadBtn = styled(TouchableOpacity)`
 const PluginCard = ({ plugin, handleDownload, downloading }: { plugin: Plugin, handleDownload: (plugin: Plugin) => Promise<boolean>, downloading: boolean }) => {
     const { plugins } = useSelector((state: any) => state.pluginsActive);
     const [pluginDownloading, setPluginDownloading] = useState('');
+    const theme = useTheme();
 
     const handleDownloadPlugin = async (plugin: Plugin) => {
         setPluginDownloading(plugin.plugin_id.toString());
@@ -104,15 +105,15 @@ const PluginCard = ({ plugin, handleDownload, downloading }: { plugin: Plugin, h
                             {
                                 (pluginDownloading === plugin.plugin_id.toString() && downloading) ? 
                                 <MaterialIcons name="hourglass-empty" size={24} color="black" /> :
-                                <FontAwesome name="refresh" size={24} color="black" />
+                                <FontAwesome name="refresh" size={24} color={theme.secondaryColor} />
                             }
                         </DownloadBtn> :
-                        <AntDesign name="check" size={24} color="green" /> :
+                        <AntDesign name="check" size={24}  color={theme.secondaryColor} /> :
                         <DownloadBtn onPress={() => handleDownloadPlugin(plugin)}>
                             {
                                 (pluginDownloading === plugin.plugin_id.toString() && downloading) ? 
-                                <MaterialIcons name="hourglass-empty" size={24} color="black" /> :
-                                <Feather name="download" size={24} color="black" />
+                                <MaterialIcons name="hourglass-empty" size={24}  color={theme.secondaryColor} /> :
+                                <Feather name="download" size={24}  color={theme.secondaryColor} />
                             }
                         </DownloadBtn>
                     }
