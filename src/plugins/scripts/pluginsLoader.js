@@ -93,7 +93,7 @@ export async function loadPlugins(dispatch, addPluginResources) {
                             }
                         }
 
-                        dispatch(addActivePlugin({ pluginSlug: manifest.slug, pluginName: manifest.name, pluginVersion: manifest.version_code }));
+                        dispatch(addActivePlugin({ pluginSlug: manifest.slug, pluginName: manifest.name, pluginVersion: manifest.version_code, pluginId: manifest.id }));
                         plugins.push({ name: manifest.name, scripts, styles });
                     }
                 } catch (error) {
