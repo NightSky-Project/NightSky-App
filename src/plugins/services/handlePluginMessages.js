@@ -7,7 +7,7 @@ import * as FileSystem from 'expo-file-system';
  * @param {Object} webViewRef - Reference to the WebView component.
  * @param {Array} resources - List of plugin resources from the Redux store.
  */
-const handleWebViewMessage = async (event, webViewRef, resources, themeProps) => {
+const handleWebViewMessage = async (event, webViewRef, resources, themeProps, navigate) => {
     try {
         if(!event.nativeEvent.data) return;
         webViewLogger(event);
@@ -36,6 +36,9 @@ const handleWebViewMessage = async (event, webViewRef, resources, themeProps) =>
                             window.receiveResource(\`${resourcePath}\`, \`${content}\`);
                         })();
                     `);
+                    break;
+                case 'STORE':
+                    navigate('/store');
                     break;
             }
         }

@@ -54,6 +54,9 @@ const NavBar = ({ handleSearch }) => {
                 inputRef.current.blur();
                 return true;
             }
+            else{
+                navigate('/');
+            }
             return false;
         };
 
@@ -89,7 +92,7 @@ const NavBar = ({ handleSearch }) => {
 
     return (
         <Container>
-            <TouchableOpacity onPress={() => navigate('/ff')}>
+            <TouchableOpacity onPress={() => navigate('/')}>
                 <Ionicons name="arrow-back" size={24} color={theme.primaryColor} />
             </TouchableOpacity>
             {isFocused && (

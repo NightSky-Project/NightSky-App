@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native';
 import handleWebViewMessage from '../../plugins/services/handlePluginMessages';
 import { useSelector } from 'react-redux';
 import { useThemeContext } from '../../contexts/themeContext';
+import { useNavigate } from 'react-router-native';
 
 /**
  * Component that renders a WebView with injected scripts and styles.
@@ -16,6 +17,7 @@ export default function WebViewComponent({ plugins = [] }) {
     const { switchColorMode, switchDarkModeType } = useThemeContext();;
     const {resources} = useSelector(state => state.pluginResources);
     const webViewRef = useRef(null);
+    const navigate = useNavigate();
 
     const injectJs = () => {
         const scripts = plugins.map((plugin) => plugin.scripts).flat();
@@ -67,7 +69,7 @@ export default function WebViewComponent({ plugins = [] }) {
             allowUniversalAccessFromFileURLs={true}
             injectedJavaScript={injectedJS}
             onLoad={() => injectJs()}
-            onMessage={(event) => {handleWebViewMessage(event, webViewRef, resources, {switchColorMode, switchDarkModeType})}}
+            onMessage={(event) => {handleWebViewMessage(event, webViewRef, resources, {switchColorMode, switchDarkModeType}, navigate)}}
         />
     );
 }

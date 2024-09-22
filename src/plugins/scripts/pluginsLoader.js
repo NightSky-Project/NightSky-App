@@ -2,8 +2,9 @@ import * as FileSystem from 'expo-file-system';
 import getLocalStorageData from '../default/getLocalStorage';
 import monitorHtmlChanges from '../default/monitorHtmlChanges';
 import getWebViewLogs from '../default/getWebViewLogs';
-import changeLogoColor from '../default/changeLogoColor';
+import changeLogoColor from '../default/addStoreButton';
 import { addActivePlugin } from '../../redux/slices/pluginsActiveSlice';
+import addStoreButton from '../default/addStoreButton';
 
 /**
  * Loads plugins from the plugins directory and returns a list of plugins with their scripts, styles, and assets.
@@ -102,7 +103,7 @@ export async function loadPlugins(dispatch, addPluginResources) {
         }
 
         // Include default scripts
-        plugins.push({ name: 'Default', scripts: [getWebViewLogs, getLocalStorageData, monitorHtmlChanges], styles: [] });
+        plugins.push({ name: 'Default', scripts: [getWebViewLogs, getLocalStorageData, monitorHtmlChanges, addStoreButton], styles: [] });
         console.info('Plugins loaded');
 
         return plugins;

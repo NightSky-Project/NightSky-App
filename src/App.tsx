@@ -17,8 +17,8 @@ export default function App() {
                 <Provider store={store}>
                     <StyledStatusBar />
                     <Routes>
-                        <Route path="/ff" element={<BskyPage />} />
-                        <Route path="/" element={<PluginStore />} />
+                        <Route path="/" element={<BskyPage />} />
+                        <Route path="/store" element={<PluginStore />} />
                     </Routes>
                     <StyledNavigationBar />
                 </Provider>
