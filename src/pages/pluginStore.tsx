@@ -102,7 +102,7 @@ const PluginStore = () => {
 
     const handleDownload = async (plugin: Plugin) => {
         setDownloading(true);
-        downloadPlugin(plugin.bucket_url, plugin.plugin_name).then(() => reloadPlugins());
+        downloadPlugin(plugin.bucket_url, plugin.plugin_id).then(() => reloadPlugins());
     }
 
     const handleClearFilters = async () => {
