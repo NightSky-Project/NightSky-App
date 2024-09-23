@@ -12,7 +12,7 @@ import addStoreButton from '../default/addStoreButton';
  */
 export async function loadPlugins(dispatch, addPluginResources) {
     const PLUGINS_DIRECTORY = FileSystem.documentDirectory + 'plugins';
-    await FileSystem.deleteAsync(PLUGINS_DIRECTORY, { idempotent: true }); // TEST ONLY - Reset plugins directory
+    // await FileSystem.deleteAsync(PLUGINS_DIRECTORY, { idempotent: true }); // TEST ONLY - Reset plugins directory
 
     const checkDirectoryExists = async (directory) => {
         try {
@@ -92,7 +92,6 @@ export async function loadPlugins(dispatch, addPluginResources) {
                                 dispatch(addPluginResources(assets));
                             }
                         }
-
                         dispatch(addActivePlugin({ pluginSlug: manifest.slug, pluginName: manifest.name, pluginVersion: manifest.version_code, pluginId: manifest.id }));
                         plugins.push({ name: manifest.name, scripts, styles });
                     }

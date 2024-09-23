@@ -9,4 +9,5 @@ export type Plugin = {
     updated_at: string; 
     downloads: number;
     version: number;
+    uuid: string;
 };

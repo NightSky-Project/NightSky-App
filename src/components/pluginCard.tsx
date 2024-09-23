@@ -75,7 +75,7 @@ const PluginCard = ({ plugin, handleDownload, downloading }: { plugin: Plugin, h
     const theme = useTheme();
 
     const handleDownloadPlugin = async (plugin: Plugin) => {
-        setPluginDownloading(plugin.plugin_id.toString());
+        setPluginDownloading(plugin.uuid.toString());
         handleDownload(plugin);
     }
 
@@ -87,7 +87,7 @@ const PluginCard = ({ plugin, handleDownload, downloading }: { plugin: Plugin, h
         return false;
     }
 
-    const installedPlugin = plugins.find((p: any) => p.pluginId === plugin.plugin_id);
+    const installedPlugin = plugins.find((p: any) => p.pluginId === plugin.uuid);
     const updateAvailable = installedPlugin && isUpdateAvailable(installedPlugin.pluginVersion, plugin.version.toString());
 
     return (
@@ -103,7 +103,7 @@ const PluginCard = ({ plugin, handleDownload, downloading }: { plugin: Plugin, h
                         updateAvailable ? 
                         <DownloadBtn onPress={() => handleDownloadPlugin(plugin)}>
                             {
-                                (pluginDownloading === plugin.plugin_id.toString() && downloading) ? 
+                                (pluginDownloading === plugin.uuid.toString() && downloading) ? 
                                 <MaterialIcons name="hourglass-empty" size={24} color="black" /> :
                                 <FontAwesome name="refresh" size={24} color={theme.secondaryColor} />
                             }
@@ -111,7 +111,7 @@ const PluginCard = ({ plugin, handleDownload, downloading }: { plugin: Plugin, h
                         <AntDesign name="check" size={24}  color={theme.secondaryColor} /> :
                         <DownloadBtn onPress={() => handleDownloadPlugin(plugin)}>
                             {
-                                (pluginDownloading === plugin.plugin_id.toString() && downloading) ? 
+                                (pluginDownloading === plugin.uuid.toString() && downloading) ? 
                                 <MaterialIcons name="hourglass-empty" size={24}  color={theme.secondaryColor} /> :
                                 <Feather name="download" size={24}  color={theme.secondaryColor} />
                             }

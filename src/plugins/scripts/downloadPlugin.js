@@ -7,9 +7,9 @@ import createPluginDirs from './createPluginDirs';
  * @param {string} pluginName - Name of the plugin to be downloaded.
  * @returns {Promise<string>} Path to the extracted plugin directory.
  */
-export async function downloadPlugin(bucketUrl, pluginId) {
-    const downloadPath = `${FileSystem.documentDirectory}plugins/downloads/${pluginId}.zip`;
-    const extractPath = `${FileSystem.documentDirectory}plugins/${pluginId}`;
+export async function downloadPlugin(bucketUrl, uuid) {
+    const downloadPath = `${FileSystem.documentDirectory}plugins/downloads/${uuid}.zip`;
+    const extractPath = `${FileSystem.documentDirectory}plugins/${uuid}`;
 
     await createPluginDirs();
 
