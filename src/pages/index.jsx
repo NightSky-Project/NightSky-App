@@ -12,6 +12,7 @@ import { Host, Portal } from 'react-native-paper-portal';
 export default function BskyPage() {
     const [pluginsList, setPluginsList] = useState([]);
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(true);
     const [pluginsLoaded, setPluginsLoaded] = useState(false);
 
     useEffect(() => {
@@ -26,19 +27,27 @@ export default function BskyPage() {
         loadPlugins_();
     }, []);
 
-    if(!pluginsLoaded) {
-        return (
-            <Portal>
-                <Host>
-                    <SplashScreen />
-                </Host>
-            </Portal>
-        );
-    }
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 2000);
+
+        return () => clearTimeout(timer);
+    }, []);
+
 
     return (
         <View style={styles.container}>
-            <WebViewComponent plugins={pluginsList}/>
+            <Host>
+                {
+                    (loading || !pluginsLoaded) && (
+                        <Portal>
+                            <SplashScreen />
+                        </Portal>
+                    )
+                }
+                <WebViewComponent plugins={pluginsList}/>
+            </Host>
         </View>
     );
 }

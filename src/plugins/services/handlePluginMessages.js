@@ -72,6 +72,12 @@ const handleWebViewMessage = async (event, webViewRef, resources, themeProps, na
                     const { url, name } = message;
                     const response = await axios.get(url).then(res => res.data).catch(err => {
                         console.error('Failed to fetch API:', err);
+                        webViewRef.current.injectJavaScript(`
+                            (function() {
+                                // Handle the received API response
+                                window.receiveData(\`${name}\`, null);
+                            })();
+                        `);
                         return null;
                     });
                     if(!response) return;

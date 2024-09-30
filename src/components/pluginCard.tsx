@@ -103,7 +103,7 @@ const PluginCard = ({ plugin, handleDownload, downloading, plugins }: { plugin: 
                         <DownloadBtn onPress={() => handleDownloadPlugin(plugin)}>
                             {
                                 (pluginDownloading === plugin.uuid.toString() && downloading) ? 
-                                <MaterialIcons name="hourglass-empty" size={24} color="black" /> :
+                                <MaterialIcons name="hourglass-empty" size={24} color={theme.secondaryColor} /> :
                                 <FontAwesome name="refresh" size={24} color={theme.secondaryColor} />
                             }
                         </DownloadBtn> :
