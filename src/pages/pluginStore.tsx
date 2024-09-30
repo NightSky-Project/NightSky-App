@@ -48,26 +48,27 @@ const filterByCategory = (plugins: Plugin[], categories: string[]) => {
 
 const PluginStore = () => {
     const theme = useTheme();
-    const [plugins, setPlugins] = useState([] as Plugin[]);
+    const [pluginsAvaiable, setPlugins] = useState([] as Plugin[]);
     const [loading, setLoading] = useState(true);
     const [categoriesFilter, setCategoriesFilter] = useState([] as string[]);
     const [dowloading, setDownloading] = useState(false);
     const dispatch = useDispatch();
+    const { plugins } = useSelector((state: any) => state.pluginsActive);
 
     useEffect(() => {
         fetchPlugins();
     }, []);
 
     const fetchPlugins = async () => {
-        const plugins = await api.getPlugins(0, 10);
-        setPlugins(filterByCategory(plugins, categoriesFilter));
+        const plugins_ = await api.getPlugins(0, 10);
+        setPlugins(filterByCategory(plugins_, categoriesFilter));
         await loadPlugins(dispatch, addPluginResources);
         setLoading(false);
     }
 
     const handleSearch = async (searchText: string) => {
-        const plugins = await api.searchPlugins(searchText);
-        setPlugins(filterByCategory(plugins, categoriesFilter));
+        const plugins_ = await api.searchPlugins(searchText);
+        setPlugins(filterByCategory(plugins_, categoriesFilter));
     }
 
     const handleSelectCategory = async (category: string) => {
@@ -102,7 +103,8 @@ const PluginStore = () => {
 
     const handleDownload = async (plugin: Plugin) => {
         setDownloading(true);
-        downloadPlugin(plugin.bucket_url, plugin.uuid).then(() => reloadPlugins());
+        await downloadPlugin(plugin.bucket_url, plugin.uuid);
+        await reloadPlugins();
     }
 
     const handleClearFilters = async () => {
@@ -127,7 +129,7 @@ const PluginStore = () => {
                 loading ? (
                     <ActivityIndicator size="large" color={theme.tertiaryColor} />
                 ) : (
-                    <PluginsListContainer contentContainerStyle={{
+                    <PluginsListContainer key={plugins} contentContainerStyle={{
                         display: 'flex',
                         justifyContent: 'flex-start',
                         alignItems: 'center',
@@ -136,8 +138,8 @@ const PluginStore = () => {
                             plugins.length === 0 ? (
                                 <Text style={{color: theme.primaryColor, fontSize: 14}}>No plugins found</Text>
                             ) : (
-                                plugins.map((plugin) => (
-                                    <PluginCard key={plugin.plugin_id} plugin={plugin} handleDownload={handleDownloadPlugin} downloading={dowloading} />
+                                pluginsAvaiable.map((plugin) => (
+                                    <PluginCard key={plugin.plugin_id} plugin={plugin} handleDownload={handleDownloadPlugin} downloading={dowloading} plugins={plugins} />
                                 ))
                             )
                         }

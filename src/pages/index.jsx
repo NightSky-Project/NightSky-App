@@ -12,40 +12,33 @@ import { Host, Portal } from 'react-native-paper-portal';
 export default function BskyPage() {
     const [pluginsList, setPluginsList] = useState([]);
     const dispatch = useDispatch();
-    const [loading, setLoading] = useState(true);
     const [pluginsLoaded, setPluginsLoaded] = useState(false);
 
     useEffect(() => {
         const loadPlugins_ = async () => {
-            const plugins = await loadPlugins(dispatch, addPluginResources);
-            setPluginsList(plugins);
-            setPluginsLoaded(true);
+            if(!pluginsLoaded) {
+                const plugins = await loadPlugins(dispatch, addPluginResources);
+                setPluginsList(plugins);
+                setPluginsLoaded(true);
+            }
         };
 
         loadPlugins_();
     }, []);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 4000);
-
-        return () => clearTimeout(timer);
-    }, []);
-
+    if(!pluginsLoaded) {
+        return (
+            <Portal>
+                <Host>
+                    <SplashScreen />
+                </Host>
+            </Portal>
+        );
+    }
 
     return (
         <View style={styles.container}>
-            <Host>
-                {
-                    (loading || !pluginsLoaded) && (
-                        <Portal>
-                            <SplashScreen />
-                        </Portal>
-                    )
-                }
-                <WebViewComponent plugins={pluginsList}/>
-            </Host>
+            <WebViewComponent plugins={pluginsList}/>
         </View>
     );
 }

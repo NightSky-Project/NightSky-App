@@ -69,8 +69,7 @@ const DownloadBtn = styled(TouchableOpacity)`
 
 `;
 
-const PluginCard = ({ plugin, handleDownload, downloading }: { plugin: Plugin, handleDownload: (plugin: Plugin) => Promise<boolean>, downloading: boolean }) => {
-    const { plugins } = useSelector((state: any) => state.pluginsActive);
+const PluginCard = ({ plugin, handleDownload, downloading, plugins }: { plugin: Plugin, handleDownload: (plugin: Plugin) => Promise<boolean>, downloading: boolean, plugins: { pluginId: string, pluginVersion: string }[] }) => {
     const [pluginDownloading, setPluginDownloading] = useState('');
     const theme = useTheme();
 

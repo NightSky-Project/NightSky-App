@@ -7,11 +7,15 @@ const pluginsActive = createSlice({
     },
     reducers: {
         addActivePlugin: (state, action) => {
-            console.log('Adding active plugin:', action.payload);
             if (!action.payload.pluginSlug || !action.payload.pluginName || !action.payload.pluginVersion || !action.payload.pluginId) {
                 throw new Error('Invalid plugin');
             }
-            state.plugins.push(action.payload);
+            const existingPluginIndex = state.plugins.findIndex(plugin => plugin.pluginId === action.payload.pluginId);
+            if (existingPluginIndex !== -1) {
+                state.plugins[existingPluginIndex] = action.payload;
+            } else {
+                state.plugins.push(action.payload);
+            }
         }
     }
 });
